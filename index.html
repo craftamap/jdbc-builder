@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>jdbc url builder</title>
+        <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+        <style>
+            * {
+                font-family: 'Lato', sans-serif;
+            }
+            html {
+                margin: 0 0;
+                background: #222831;
+                color: #ececec;
+            }
+            body {
+                width: 800px;
+                margin: 4em auto;
+                font-size: 1.5em;
+            }
+            
+            code {
+                display: block;
+                font-family: monospace;
+                padding: 15px;
+                background-color: #30475e;
+                margin: 0.5em 0;
+            }
+
+            h1 {
+                text-align: center;
+            }
+            form {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .form-group {
+                display: flex;
+                flex-direction: row;
+                margin: 0.5em 0;
+            }
+            .form-group label {
+                flex-basis: 30%;
+            }
+            .form-group input {
+                flex-basis: 70%;
+                margin-right: 8px;
+                background-color: #30475e;
+                color: #ececec;
+                border: none;
+                padding: 8px;
+            }
+            .form-group input:invalid {
+                background-color: #f2a365;
+            }
+            .form-group input[type="checkbox"] {
+                flex-basis: 10%;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>jdbc url builder</h1>
+        <div id="app">
+            <code>
+                {{jdbcurl}}
+            </code>
+            <form>
+                <div class="form-group">
+                    <label for="host">host</label>
+                    <input type="text" name="host" value="" id="host" v-model="host" pattern="[a-zA-Z0-9.]+">
+                </div>
+                <div class="form-group">
+                    <label for="port">port</label><input type="number" name="port" value="" id="port" min="0" v-model="port">
+                </div>
+                <div class="form-group">
+                    <label for="database">database</label>
+                    <input type="text" name="database" value="" id="database" v-model="database">
+                </div>
+                <div class="form-group">
+                    <label for="username">username</label>
+                    <input type="username" name="username" value="" id="username" v-model="params.username">
+                    <label for="password">password</label>
+                    <input type="password" name="password" value="" id="password" v-model="params.password">
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" name="ssl" value="" id="ssl" v-model="params.ssl">
+                    <label for="ssl">ssl</label>
+                </div>
+            </form>
+        </div>
+    </body>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script charset="utf-8">
+
+    Object.filter = (obj, predicate) =>
+        Object.keys(obj)
+              .filter( key => predicate(obj[key]) )
+              .reduce( (res, key) => (res[key] = obj[key], res), {} );
+
+        var app = new Vue({
+            el: "#app",
+            data: {
+                host: '',
+                database: '',
+                port: '',
+                params: {
+                    username: '',
+                    password: '',
+                    ssl: false,
+                }
+            },
+            computed: {
+                jdbcurl: function() {
+                    const valuefulParams = Object.filter(this.params, value => !!value)
+                    const host = (this.host && "//"+this.host) + (this.host && this.port && ":"+this.port) + ((this.host || (!this.host && !this.database)) && "/" || "")
+                    return "jdbc:postgresql:" + host 
+                        + this.database 
+                        + (((Object.keys(valuefulParams).length > 0) && "?"+(new URLSearchParams(valuefulParams).toString())) || '' )
+                }
+            }
+        })
+    </script>
+</html>
