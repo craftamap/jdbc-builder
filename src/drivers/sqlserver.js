@@ -21,26 +21,33 @@ export default {
         );
 
     const valuefulParams = (!!x.property && filter(x.property, value => !!value)) || {};
-    let host = '';
-    if (x.host) {
-      host += '//';
-      host += x.host;
-      if (x.port) {
-        host += ':';
-        host += x.port;
+    let servername = '';
+    if (x.serverName) {
+      servername += '//';
+      servername += x.serverName;
+      if (x.instanceName) {
+        servername += '\\';
+        servername += x.instanceName;
       }
-    }
-    if (x.host || (!x.host && !x.database)) {
-      host += '/';
+
+      if (x.portNumber) {
+        servername += ':';
+        servername += x.portNumber;
+      }
     }
     let params = '';
     if (Object.keys(valuefulParams).length > 0) {
+      const regex = /(;|"|'|\s)/g;
       Object.entries(valuefulParams).forEach((entry) => {
-        const [key, value] = entry;
+        const key = entry[0];
+        let value = entry[1];
+        if (regex.test(value)) {
+          value = `{${value}}`;
+        }
         params += `;${key}=${value}`;
       });
     }
 
-    return `jdbc:${this.prefix}:${host}${params}`;
+    return `jdbc:${this.prefix}:${servername}${params}`;
   },
 };

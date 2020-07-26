@@ -1,18 +1,50 @@
 <template>
-  <div class="form-group" >
+  <div class="form-group" :class="hasChildren">
     <label :for="index">{{displayName}}</label>
-    <input :id="index" v-if="typeof item === 'string' && item === 'hostname'"
-      type="text" v-model="toEmit"/>
-    <input :id="index" v-if="typeof item === 'string' && item === 'text'"
-      type="text" v-model="toEmit"/>
-    <input :id="index" v-if="typeof item === 'string' && item === 'port'"
-      type="number" min="0" v-model="toEmit"/>
-    <input :id="index" v-if="typeof item === 'string' && item === 'boolean'"
-      type="checkbox" v-model="toEmit"/>
-    <span v-for="(it, idx) in item" :key="idx">
-      <urlinput :id="idx" v-if="typeof item === 'object'" :item="it"
+    <!-- hostname -->
+    <input
+      v-if="typeof item === 'string' && item === 'hostname'"
+      :id="index"
+      v-model="toEmit"
+      type="text"
+      pattern="^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$"
+      />
+
+    <!-- (normal) text -->
+    <input
+      v-if="typeof item === 'string' && item === 'text'"
+      :id="index"
+      v-model="toEmit"
+      type="text"
+      />
+    <!-- port -->
+    <input
+      v-if="typeof item === 'string' && item === 'port'"
+      :id="index"
+      type="number"
+      min="0"
+      v-model="toEmit"
+      />
+    <!-- boolean -->
+    <input
+      v-if="typeof item === 'string' && item === 'boolean'"
+      :id="index"
+      type="checkbox"
+      v-model="toEmit"
+      true-value="true"
+      false-value="false"
+      />
+
+    <span
+v-if="typeof item === 'object'"
+      >
+      <urlinput
+        :id="idx"
+        v-for="(it, idx) in item"
+       :key="idx" :item="it"
       :index="index+'--'+idx" @handle-data="handleData"/>
     </span>
+
   </div>
 </template>
 
@@ -26,6 +58,9 @@ export default {
   computed: {
     displayName() {
       return this.index.split('--')[this.index.split('--').length - 1];
+    },
+    hasChildren() {
+      return (typeof this.item === 'object') ? 'hasChildren' : '';
     },
   },
   watch: {

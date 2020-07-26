@@ -24,6 +24,9 @@ export default {
     url(newValue) {
       this.$emit('updateurl', newValue);
     },
+    driver() {
+      this.url = this.driver.urlbuilder(this.segments);
+    }
   },
   props: ['driver'],
   methods: {
@@ -47,6 +50,14 @@ form {
     display: flex;
     flex-direction: row;
     margin: 0.5em 0;
+}
+
+.form-group.hasChildren {
+  flex-direction: column;
+}
+
+.form-group.hasChildren > label {
+    text-align: center;
 }
 
 .form-group label {

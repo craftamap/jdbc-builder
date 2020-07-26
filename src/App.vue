@@ -12,9 +12,6 @@ export default {
 </script>
 
 <style>
-* {
-    font-family: 'Lato', sans-serif;
-}
 html {
     margin: 0 0;
     background: #222831;
@@ -24,6 +21,7 @@ body {
     width: 800px;
     margin: 4em auto;
     font-size: 1.5em;
+    font-family: 'Lato', sans-serif;
 }
 h1 {
     text-align: center;

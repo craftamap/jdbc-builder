@@ -2,11 +2,17 @@
 <template>
   <div>
     <div class="jdbc-url">
-      {{jdbc}}
+      <span v-if="jdbc">
+        {{jdbc}}
+      </span>
+      <span v-else>
+        Select your driver and start typing...
+      </span>
     </div>
     <select class="driver" v-model="driver">
+      <option disabled selected>select your driver here...</option>
       <option v-for="dr in Object.entries(drivers)" v-bind:key="dr[0]" v-bind:value="dr[1]">
-        {{dr[0]}}
+        {{dr[1].description}}
       </option>
     </select>
     <urlform :driver="driver" @updateurl="updateUrl"/>
@@ -43,7 +49,7 @@ export default {
 
 <style>
 .jdbc-url {
-  font-family: monospace;
+  font-family: monospace !important;
   background: #30475e;
   padding: 1em;
 }
